@@ -1,0 +1,85 @@
+org: pnarielwala
+app: todo-app
+# NOTE: update this with your service name
+service: rest-api-nodejs
+
+# Use the serverless-webpack plugin to transpile ES6
+plugins:
+  - serverless-webpack
+  - serverless-dynamodb-local
+  - serverless-offline
+
+custom:
+  dynamodb:
+    stages:
+      - dev
+    start:
+      port: 8001
+      inMemory: true
+      heapInitial: 200m
+      heapMax: 1g
+      migrate: true
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: true
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  region: us-east-1
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        # Dynamoose uses DescribeTable ensure the table doesn't already exist.
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: 'arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/Todos'
+
+functions:
+  getAll:
+    handler: todos/index.getTodos
+    events:
+      - http:
+          path: todos
+          method: get
+  create:
+    handler: todos/index.createTodo
+    events:
+      - http:
+          path: todos
+          method: post
+  completeTodo:
+    handler: todos/index.completeTodo
+    events:
+      - http:
+          path: todos/{id}
+          method: put
+  delete:
+    handler: todos/index.deleteTodo
+    events:
+      - http:
+          path: todos/{id}
+          method: delete
+
+resources:
+  Resources:
+    TodosTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: Todos
