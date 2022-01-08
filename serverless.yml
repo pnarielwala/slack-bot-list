@@ -1,7 +1,8 @@
+# NOTE: update this with your organization
 org: pnarielwala
-app: todo-app
+app: slack-list
 # NOTE: update this with your service name
-service: rest-api-nodejs
+service: personal
 
 # Use the serverless-webpack plugin to transpile ES6
 plugins:
@@ -39,47 +40,43 @@ provider:
         - dynamodb:PutItem
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
-      Resource: 'arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/Todos'
+      Resource:
+        - 'arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/Lists'
+        - 'arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/Lists/index/*'
 
 functions:
-  getAll:
-    handler: todos/index.getTodos
+  hook:
+    handler: lists/slack.hook
     events:
       - http:
-          path: todos
-          method: get
-  create:
-    handler: todos/index.createTodo
-    events:
-      - http:
-          path: todos
+          path: slack
           method: post
-  completeTodo:
-    handler: todos/index.completeTodo
-    events:
-      - http:
-          path: todos/{id}
-          method: put
-  delete:
-    handler: todos/index.deleteTodo
-    events:
-      - http:
-          path: todos/{id}
-          method: delete
 
 resources:
   Resources:
-    TodosTable:
+    ListsTable:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain
       Properties:
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
+          - AttributeName: category
+            AttributeType: S
+        GlobalSecondaryIndexes:
+          - IndexName: category-index
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+            KeySchema:
+              - AttributeName: category
+                KeyType: HASH
         KeySchema:
           - AttributeName: id
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-        TableName: Todos
+        TableName: Lists

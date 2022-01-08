@@ -10,9 +10,9 @@
     "allowSyntheticDefaultImports": true,
     "lib": ["es2016", "esnext.asynciterable"],
     "sourceMap": true,
-    "baseUrl": "todos",
+    "baseUrl": "lists",
     "noEmit": true
   },
-  "include": ["todos"],
+  "include": ["lists"],
   "exclude": [".webpack"]
 }
