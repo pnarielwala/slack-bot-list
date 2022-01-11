@@ -107,3 +107,6 @@ Now you should be able to go into any channel and send the following message:
 /list show
 ```
 :partying_face::partying_face::partying_face:
+
+
+![](https://parths-assets.s3.us-east-2.amazonaws.com/slack-bot-help.jpg)
