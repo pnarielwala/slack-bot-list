@@ -1,6 +1,17 @@
 # slack-bot-list
 ## Goal
-The goal of this repo is to be a boilerplate for anyone who would like to deploy a simple slack list bot to AWS and set it up with Slack
+The goal of this repo is to be a boilerplate for anyone who would like to deploy a simple slack list bot to AWS and set it up with Slack. 
+
+With this app, we want to:
+* Persist a multiple list database
+* Support following commands:
+  * Show list
+  * Add to list
+  * Remove from list
+  * Clear list
+  * Help with list commands
+* Create an endpoint to manage the list in the cloud
+* Create a slack command to help teams create/maintain lists
 
 ## What you'll need
 Before you get started, make sure you have access to the following
