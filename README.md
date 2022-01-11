@@ -20,6 +20,7 @@ Before you get started, make sure you have access to the following
 * [Yarn](https://formulae.brew.sh/formula/yarn)
 * [AWS Account](https://signin.aws.amazon.com/) (~ $2.60/month)
 * [Serverless Account](https://app.serverless.com/) (FREE)
+* Slack workspace
 
 ## Get started
 
